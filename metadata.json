@@ -1,0 +1,6 @@
+{
+  "name": "حساب السكن",
+  "description": "تطبيق إدارة مصاريف وحسابات السكن الطلابي بالدينار العراقي",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
