@@ -162,8 +162,10 @@ fun AddEditPurchaseScreen(
         totalAmountInput.toLongOrNull() ?: 0L
     }
 
-    val selectedParticipantIds = remember(participantMap) {
-        participantMap.filter { it.value }.keys.toSet()
+    val selectedParticipantIds by remember {
+        derivedStateOf {
+            participantMap.filterValues { it }.keys.toSet()
+        }
     }
 
     // Calculated shares in EQUAL mode
