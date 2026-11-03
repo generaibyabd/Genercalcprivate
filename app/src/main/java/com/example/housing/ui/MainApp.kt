@@ -20,6 +20,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -42,11 +45,39 @@ sealed class Screen {
     data class AddEditPurchase(val purchaseIdToEdit: Long?) : Screen()
 }
 
+private val ScreenSaver: Saver<Screen, Any> = mapSaver(
+    save = { screen ->
+        when (screen) {
+            is Screen.Dashboard -> mapOf("type" to "dashboard")
+            is Screen.Purchases -> mapOf("type" to "purchases")
+            is Screen.Accounts -> mapOf("type" to "accounts")
+            is Screen.Settings -> mapOf("type" to "settings")
+            is Screen.PurchaseDetails -> mapOf("type" to "details", "id" to screen.purchaseId)
+            is Screen.AddEditPurchase -> mapOf("type" to "addEdit", "id" to (screen.purchaseIdToEdit ?: -1L))
+        }
+    },
+    restore = { map ->
+        when (map["type"]) {
+            "purchases" -> Screen.Purchases
+            "accounts" -> Screen.Accounts
+            "settings" -> Screen.Settings
+            "details" -> Screen.PurchaseDetails(map["id"] as Long)
+            "addEdit" -> {
+                val id = map["id"] as Long
+                Screen.AddEditPurchase(if (id == -1L) null else id)
+            }
+            else -> Screen.Dashboard
+        }
+    }
+)
+
 @Composable
 fun MainApp(
     viewModel: HousingViewModel = viewModel()
 ) {
-    var currentScreen by remember { mutableStateOf<Screen>(Screen.Dashboard) }
+    var currentScreen by rememberSaveable(stateSaver = ScreenSaver) {
+        mutableStateOf<Screen>(Screen.Dashboard)
+    }
 
     // Enforce RTL layout throughout the entire application
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {

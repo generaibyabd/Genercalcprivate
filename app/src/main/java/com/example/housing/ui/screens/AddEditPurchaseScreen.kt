@@ -53,7 +53,12 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,6 +84,21 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+private fun <K : Any, V : Any> snapshotStateMapSaver(): Saver<SnapshotStateMap<K, V>, Any> =
+    listSaver(
+        save = { stateMap -> stateMap.toList() },
+        restore = { it.toMutableStateMap() }
+    )
+
+@Composable
+private fun <K : Any, V : Any> rememberMutableStateMapOf(
+    vararg pairs: Pair<K, V>
+): SnapshotStateMap<K, V> {
+    return rememberSaveable(saver = snapshotStateMapSaver()) {
+        pairs.toList().toMutableStateMap()
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditPurchaseScreen(
@@ -102,19 +122,19 @@ fun AddEditPurchaseScreen(
     }
 
     // Form fields
-    var title by remember { mutableStateOf("") }
-    var totalAmountInput by remember { mutableStateOf("") }
-    var purchaseDate by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    var title by rememberSaveable { mutableStateOf("") }
+    var totalAmountInput by rememberSaveable { mutableStateOf("") }
+    var purchaseDate by rememberSaveable { mutableLongStateOf(System.currentTimeMillis()) }
     var selectedCategoryId by remember { mutableStateOf<Long?>(null) }
-    var notes by remember { mutableStateOf("") }
-    var splitMode by remember { mutableStateOf("EQUAL") } // "EQUAL" or "CUSTOM"
+    var notes by rememberSaveable { mutableStateOf("") }
+    var splitMode by rememberSaveable { mutableStateOf("EQUAL") } // "EQUAL" or "CUSTOM"
 
     // Map studentId -> isParticipant
-    val participantMap = remember { mutableStateMapOf<Long, Boolean>() }
+    val participantMap = rememberMutableStateMapOf<Long, Boolean>()
     // Map studentId -> contribution text
-    val contributionInputs = remember { mutableStateMapOf<Long, String>() }
+    val contributionInputs = rememberMutableStateMapOf<Long, String>()
     // Map studentId -> custom share text
-    val customShareInputs = remember { mutableStateMapOf<Long, String>() }
+    val customShareInputs = rememberMutableStateMapOf<Long, String>()
 
     // Init form when in Edit mode or when categories load
     var initialized by remember { mutableStateOf(false) }
