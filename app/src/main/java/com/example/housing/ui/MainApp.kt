@@ -1,8 +1,10 @@
 package com.example.housing.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Dashboard
@@ -90,70 +92,76 @@ fun MainApp(
                 }
             }
         ) { innerPadding ->
-            when (val screen = currentScreen) {
-                is Screen.Dashboard -> {
-                    DashboardScreen(
-                        viewModel = viewModel,
-                        onNavigateToAddPurchase = { currentScreen = Screen.AddEditPurchase(null) },
-                        onNavigateToPurchaseDetails = { id -> currentScreen = Screen.PurchaseDetails(id) },
-                        onNavigateToPurchasesList = { currentScreen = Screen.Purchases },
-                        onNavigateToAccounts = { currentScreen = Screen.Accounts }
-                    )
-                }
-
-                is Screen.Purchases -> {
-                    PurchasesScreen(
-                        viewModel = viewModel,
-                        onNavigateToAddPurchase = { currentScreen = Screen.AddEditPurchase(null) },
-                        onNavigateToPurchaseDetails = { id -> currentScreen = Screen.PurchaseDetails(id) }
-                    )
-                }
-
-                is Screen.Accounts -> {
-                    AccountsScreen(
-                        viewModel = viewModel,
-                        onNavigateToPurchaseDetails = { id -> currentScreen = Screen.PurchaseDetails(id) }
-                    )
-                }
-
-                is Screen.Settings -> {
-                    SettingsScreen(viewModel = viewModel)
-                }
-
-                is Screen.PurchaseDetails -> {
-                    BackHandler {
-                        currentScreen = Screen.Purchases
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = if (showBottomNav) innerPadding.calculateBottomPadding() else 0.dp)
+            ) {
+                when (val screen = currentScreen) {
+                    is Screen.Dashboard -> {
+                        DashboardScreen(
+                            viewModel = viewModel,
+                            onNavigateToAddPurchase = { currentScreen = Screen.AddEditPurchase(null) },
+                            onNavigateToPurchaseDetails = { id -> currentScreen = Screen.PurchaseDetails(id) },
+                            onNavigateToPurchasesList = { currentScreen = Screen.Purchases },
+                            onNavigateToAccounts = { currentScreen = Screen.Accounts }
+                        )
                     }
-                    PurchaseDetailsScreen(
-                        purchaseId = screen.purchaseId,
-                        viewModel = viewModel,
-                        onNavigateBack = { currentScreen = Screen.Purchases },
-                        onNavigateToEdit = { editId -> currentScreen = Screen.AddEditPurchase(editId) }
-                    )
-                }
 
-                is Screen.AddEditPurchase -> {
-                    BackHandler {
-                        currentScreen = if (screen.purchaseIdToEdit != null) {
-                            Screen.PurchaseDetails(screen.purchaseIdToEdit)
-                        } else {
-                            Screen.Purchases
+                    is Screen.Purchases -> {
+                        PurchasesScreen(
+                            viewModel = viewModel,
+                            onNavigateToAddPurchase = { currentScreen = Screen.AddEditPurchase(null) },
+                            onNavigateToPurchaseDetails = { id -> currentScreen = Screen.PurchaseDetails(id) }
+                        )
+                    }
+
+                    is Screen.Accounts -> {
+                        AccountsScreen(
+                            viewModel = viewModel,
+                            onNavigateToPurchaseDetails = { id -> currentScreen = Screen.PurchaseDetails(id) }
+                        )
+                    }
+
+                    is Screen.Settings -> {
+                        SettingsScreen(viewModel = viewModel)
+                    }
+
+                    is Screen.PurchaseDetails -> {
+                        BackHandler {
+                            currentScreen = Screen.Purchases
                         }
+                        PurchaseDetailsScreen(
+                            purchaseId = screen.purchaseId,
+                            viewModel = viewModel,
+                            onNavigateBack = { currentScreen = Screen.Purchases },
+                            onNavigateToEdit = { editId -> currentScreen = Screen.AddEditPurchase(editId) }
+                        )
                     }
-                    AddEditPurchaseScreen(
-                        viewModel = viewModel,
-                        purchaseIdToEdit = screen.purchaseIdToEdit,
-                        onNavigateBack = {
+
+                    is Screen.AddEditPurchase -> {
+                        BackHandler {
                             currentScreen = if (screen.purchaseIdToEdit != null) {
                                 Screen.PurchaseDetails(screen.purchaseIdToEdit)
                             } else {
                                 Screen.Purchases
                             }
-                        },
-                        onPurchaseSaved = { savedId ->
-                            currentScreen = Screen.PurchaseDetails(savedId)
                         }
-                    )
+                        AddEditPurchaseScreen(
+                            viewModel = viewModel,
+                            purchaseIdToEdit = screen.purchaseIdToEdit,
+                            onNavigateBack = {
+                                currentScreen = if (screen.purchaseIdToEdit != null) {
+                                    Screen.PurchaseDetails(screen.purchaseIdToEdit)
+                                } else {
+                                    Screen.Purchases
+                                }
+                            },
+                            onPurchaseSaved = { savedId ->
+                                currentScreen = Screen.Purchases
+                            }
+                        )
+                    }
                 }
             }
         }

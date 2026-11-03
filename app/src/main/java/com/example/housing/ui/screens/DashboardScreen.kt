@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Receipt
@@ -79,7 +78,9 @@ fun DashboardScreen(
                 onClick = onNavigateToAddPurchase,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.testTag("dashboard_add_purchase_fab")
+                modifier = Modifier
+                    .testTag("dashboard_add_purchase_fab")
+                    .padding(bottom = 8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -116,7 +117,6 @@ fun DashboardScreen(
                 ) {
                     DebtReceivableCard(
                         title = "إجمالي الديون المطلوبة",
-                        subtitle = "ديون تنتظر السداد",
                         amount = state.totalOutstandingDebts,
                         icon = Icons.Default.TrendingDown,
                         color = DebtorRed,
@@ -124,7 +124,6 @@ fun DashboardScreen(
                     )
                     DebtReceivableCard(
                         title = "إجمالي المستحقات",
-                        subtitle = "مبالغ مستحقة للدافعين",
                         amount = state.totalOutstandingReceivables,
                         icon = Icons.Default.TrendingUp,
                         color = CreditorGreen,
@@ -246,11 +245,6 @@ fun DashboardScreen(
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 15.sp
                             )
-                            Text(
-                                text = "اضغط على زر الإضافة أدناه لتسجيل أول عملية شراء ومشاركتها.",
-                                fontSize = 13.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
                         }
                     }
                 }
@@ -304,12 +298,6 @@ private fun FinancialOverviewCard(state: DashboardUiState) {
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
-                Icon(
-                    imageVector = Icons.Default.AttachMoney,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(36.dp)
-                )
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(
@@ -354,7 +342,6 @@ private fun FinancialOverviewCard(state: DashboardUiState) {
 @Composable
 private fun DebtReceivableCard(
     title: String,
-    subtitle: String,
     amount: Long,
     icon: ImageVector,
     color: Color,
@@ -396,12 +383,6 @@ private fun DebtReceivableCard(
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
                 color = color
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = subtitle,
-                fontSize = 11.sp,
-                color = MaterialTheme.colorScheme.outline
             )
         }
     }

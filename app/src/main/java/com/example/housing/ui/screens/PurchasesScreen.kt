@@ -112,17 +112,27 @@ fun PurchasesScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            androidx.compose.material3.ExtendedFloatingActionButton(
                 onClick = onNavigateToAddPurchase,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(
+                        text = "إضافة عملية",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp
+                    )
+                },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.testTag("purchases_add_fab")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "إضافة عملية شراء"
-                )
-            }
+                modifier = Modifier
+                    .testTag("purchases_add_fab")
+                    .padding(bottom = 8.dp)
+            )
         }
     ) { padding ->
         Column(
@@ -200,7 +210,7 @@ fun PurchasesScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(32.dp),
+                        .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -212,16 +222,23 @@ fun PurchasesScreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "لا توجد نتائج مطابقة",
+                        text = if (searchQuery.isNotBlank() || selectedCategoryId != null || statusFilter != PurchaseStatusFilter.ALL)
+                            "لا توجد نتائج مطابقة"
+                        else
+                            "لا توجد عمليات شراء مسجلة",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "جرب تغيير كلمات البحث أو تصفيات الحالة والتصنيف.",
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Spacer(modifier = Modifier.height(14.dp))
+                    androidx.compose.material3.Button(
+                        onClick = onNavigateToAddPurchase,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.testTag("purchases_empty_add_button")
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("إضافة عملية", fontWeight = FontWeight.Bold)
+                    }
                 }
             } else {
                 LazyColumn(

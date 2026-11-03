@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.housing.data.AppDatabase
+import com.example.housing.data.AppThemeMode
 import com.example.housing.data.BackupManager
 import com.example.housing.data.HousingRepository
+import com.example.housing.data.PreferencesManager
 import com.example.housing.model.Category
 import com.example.housing.model.DetailedPurchaseRecord
 import com.example.housing.model.GlobalStudentSummary
@@ -47,6 +49,12 @@ class HousingViewModel(application: Application) : AndroidViewModel(application)
 
     private val database = AppDatabase.getInstance(application)
     val repository = HousingRepository(database)
+    private val preferencesManager = PreferencesManager(application)
+    val themeMode: StateFlow<AppThemeMode> = preferencesManager.themeMode
+
+    fun setThemeMode(mode: AppThemeMode) {
+        preferencesManager.setThemeMode(mode)
+    }
 
     init {
         viewModelScope.launch {

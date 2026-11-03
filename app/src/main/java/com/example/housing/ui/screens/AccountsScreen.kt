@@ -82,38 +82,6 @@ fun AccountsScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Explanatory Banner
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = "الأرصدة العامة هنا لأغراض العرض والتقرير فقط. مستحقات أي عملية شراء لا تلغي أو تعوض ديون عملية أخرى تلقائياً. اضغط على أي طالب لعرض تفاصيل عملياته المستقلة.",
-                            fontSize = 12.sp,
-                            lineHeight = 18.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-
             if (studentSummaries.isEmpty()) {
                 item {
                     Column(
@@ -430,7 +398,7 @@ private fun GlobalStudentCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "صافي الموقف المالي (رقم إحصائي تقديري):",
+                    text = "صافي الموقف المالي:",
                     fontSize = 11.sp,
                     color = MaterialTheme.colorScheme.outline
                 )

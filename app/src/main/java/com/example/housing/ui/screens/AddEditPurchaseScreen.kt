@@ -544,15 +544,10 @@ fun AddEditPurchaseScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = "المساهمات الأصلية (من دفع فعلياً عند الشراء)",
+                            text = "المساهمات الأصلية",
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
                             color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = "أدخل المبلغ الذي دفعه كل طالب فعلياً. الحقل الفارغ يعني صفر. يمكن لأي طالب المساهمة حتى لو لم يكن مشاركاً في المصروف.",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                         relevantStudents.forEach { student ->
@@ -590,7 +585,7 @@ fun AddEditPurchaseScreen(
                         // Quick action: Single Contributor pays total
                         if (totalAmount > 0 && sumContributions != totalAmount) {
                             Text(
-                                text = "تعبئة سريعة (دافع واحد للمبلغ بالكامل):",
+                                text = "تعبئة سريعة:",
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.outline
                             )

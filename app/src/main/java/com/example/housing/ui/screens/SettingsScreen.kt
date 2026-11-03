@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.AlertDialog
@@ -43,6 +44,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import com.example.housing.data.AppThemeMode
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
@@ -80,6 +85,7 @@ fun SettingsScreen(
 
     val allStudents by viewModel.allStudents.collectAsStateWithLifecycle()
     val allCategories by viewModel.allCategories.collectAsStateWithLifecycle()
+    val currentThemeMode by viewModel.themeMode.collectAsStateWithLifecycle()
 
     // Dialog states
     var showAddStudentDialog by remember { mutableStateOf(false) }
@@ -149,7 +155,41 @@ fun SettingsScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Section 1: Student Management
+            // Section 1: Appearance (المظهر)
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Palette, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("المظهر", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        }
+
+                        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                            AppThemeMode.entries.forEachIndexed { index, mode ->
+                                SegmentedButton(
+                                    selected = currentThemeMode == mode,
+                                    onClick = { viewModel.setThemeMode(mode) },
+                                    shape = SegmentedButtonDefaults.itemShape(index = index, count = AppThemeMode.entries.size),
+                                    modifier = Modifier.testTag("theme_option_${mode.key}")
+                                ) {
+                                    Text(mode.labelAr)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Section 2: Student Management
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -327,11 +367,6 @@ fun SettingsScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text("النسخ الاحتياطي والاستعادة", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text(
-                            text = "احفظ نسخة كاملة بصيغة JSON لجميع الطلاب، التصنيفات، العمليات وسجلات الدفعات، أو استعد بياناتك في أي وقت.",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -382,11 +417,6 @@ fun SettingsScreen(
                             text = "منطقة الخطر",
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Text(
-                            text = "حذف كافة البيانات نهائياً وتفريغ قاعدة البيانات بالكامل. لا يمكن التراجع عن هذه الخطوة.",
-                            fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.height(4.dp))
